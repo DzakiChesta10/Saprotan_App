@@ -4,6 +4,7 @@
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Saprotan Utama - Portal</title>
+    <link rel="icon" type="image/png" href="{{ asset('images/logo-su-w2.png') }}">
     <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/css/bootstrap.min.css" rel="stylesheet">
     <link href="https://fonts.googleapis.com/css2?family=Plus+Jakarta+Sans:wght@400;600;800&display=swap" rel="stylesheet">
     
@@ -143,7 +144,7 @@
             width: 50px;
             height: 50px;
             border-radius: 50%;
-            background: var(--bg-card); /* Mengikuti variabel tema yang sudah ada */
+            background: var(--bg-card);
             border: 1px solid rgba(0,0,0,0.1);
             display: flex;
             align-items: center;
@@ -152,7 +153,6 @@
             transition: all 0.3s cubic-bezier(0.175, 0.885, 0.32, 1.275);
         }
 
-        /* Efek Hover */
         .btn-theme-toggle:hover {
             transform: scale(1.1) rotate(15deg);
             box-shadow: 0 10px 20px rgba(0,0,0,0.2) !important;

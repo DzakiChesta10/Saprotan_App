@@ -4,6 +4,7 @@
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Tambah Transaksi - Saprotan Utama</title>
+    <link rel="icon" type="image/png" href="{{ asset('images/logo-su-w2.png') }}">
     <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/css/bootstrap.min.css" rel="stylesheet">
     <link href="https://cdn.jsdelivr.net/npm/select2@4.1.0-rc.0/dist/css/select2.min.css" rel="stylesheet" />
     <link href="https://cdn.jsdelivr.net/npm/select2-bootstrap-5-theme@1.3.0/dist/select2-bootstrap-5-theme.min.css" rel="stylesheet" />
@@ -27,7 +28,6 @@
             --text-label: #e8eaed;
         }
 
-        /* PERBAIKAN: Gunakan variabel pada background body */
         body { 
             background-color: var(--bg-body); 
             transition: background 0.3s ease; 
@@ -38,7 +38,7 @@
             border-radius: 15px; 
             background-color: var(--card-bg); 
             border: none; 
-            transition: background 0.3s ease; /* Biar transisi warna card mulus */
+            transition: background 0.3s ease;
         }
 
         .card-header { 
@@ -46,12 +46,17 @@
             font-weight: bold; 
         }
         
-        /* Floating Button Style */
         .btn-theme-toggle {
-            width: 50px; height: 50px; border-radius: 50%;
-            background: var(--card-bg); border: 1px solid rgba(0,0,0,0.1);
-            display: flex; align-items: center; justify-content: center;
-            font-size: 1.5rem; transition: 0.3s;
+            width: 50px; 
+            height: 50px; 
+            border-radius: 50%;
+            background: var(--card-bg); 
+            border: 1px solid rgba(0,0,0,0.1);
+            display: flex; 
+            align-items: center; 
+            justify-content: center;
+            font-size: 1.5rem; 
+            transition: 0.3s;
         }
 
         .btn-theme-toggle:hover {
@@ -63,7 +68,6 @@
             color: white;
         }
 
-        /* Select2 Dark Mode Fix - Agar dropdown tidak putih silau */
         [data-bs-theme="dark"] .select2-container--bootstrap-5 .select2-selection {
             background-color: #2b2b2b; 
             border-color: #444; 

@@ -4,10 +4,11 @@ namespace App\Http\Controllers;
 
 use Illuminate\Http\Request;
 use App\Models\Barang;
+use Shuchkin\SimpleXLSX;
+use Illuminate\Support\Facades\DB;
 
 class BarangController extends Controller
 {
-    // Menampilkan daftar barang (Index)
     public function index(Request $request)
     {
         // 1. Ambil tanggal dari filter kalender, kalau nggak ada default ke hari ini
@@ -16,8 +17,26 @@ class BarangController extends Controller
         // 2. Ambil data yang HANYA diperbarui pada tanggal tersebut
         $barangs = Barang::whereDate('updated_at', $date)->get();
 
+        $listBarang = Barang::select('code', 'nama_pupuk')->distinct()->get();
+
         // 3. Kirim variabel $date ke view supaya kalender tetap menunjukkan tanggal yang dipilih
-        return view('barang.index', compact('barangs', 'date'));
+        return view('barang.index', compact('barangs', 'date', 'listBarang'));
+    }
+
+    public function destroyByDate(Request $request)
+    {
+        // Ambil tanggal dari input, kalau kosong default ke hari ini
+        $date = $request->input('date');
+
+        if (!$date) {
+            return back()->with('error', 'Pilih tanggal dulu yang mau dihapus!');
+        }
+
+        // Hapus hanya data yang updated_at sesuai tanggal tersebut
+        $deletedCount = \App\Models\Barang::whereDate('updated_at', $date)->delete();
+
+        return redirect()->route('barang.index', ['date' => $date])
+            ->with('success', "Berhasil menghapus $deletedCount data pada tanggal $date.");
     }
 
     // TAMPILKAN FORM TAMBAH (Fungsi yang tadi error/hilang)
@@ -157,6 +176,51 @@ class BarangController extends Controller
         return response()->stream($callback, 200, $headers);
     }
 
+    public function import(Request $request)
+    {
+        $request->validate([
+            'file_excel' => 'required|mimes:xlsx',
+            'sheet_index' => 'required|integer' 
+        ]);
+
+        if ($xlsx = SimpleXLSX::parse($request->file('file_excel'))) {
+            $sheetIndex = $request->sheet_index;
+            $rows = $xlsx->rows($sheetIndex);
+            
+            // Looping mulai dari index 3 (Baris ke-4 di Excel)
+            foreach ($rows as $index => $row) {
+                if ($index < 1) continue; // Skip header baris 1-3
+
+                // Jika kolom Code (index 0) kosong, berhenti/lewati
+                if (empty($row[0])) continue;
+
+                $stok_awal = (int)($row[7] ?? 0);
+                $masuk     = (int)($row[8] ?? 0);
+                $keluar    = (int)($row[9] ?? 0);
+                $stok_total = $stok_awal + $masuk - $keluar;
+
+                // Simpan atau Update berdasarkan Code
+                \App\Models\Barang::updateOrCreate(
+                        ['code'       => $row[0], 
+                        
+                        'nama_pupuk' => \Illuminate\Support\Str::limit($row[2], 250), // Nama Barang di Kolom C
+                        'locator'    => $row[5], // Locator di Kolom F
+                        'uom'        => $row[6], // Uom di Kolom G
+                        'stok_awal'  => $stok_awal,
+                        'masuk'      => $masuk,
+                        'keluar'     => $keluar,
+                        'stok_total' => $stok_total,
+                        'updated_at' => now(),
+                    ]
+                );
+            }
+
+            return back()->with('success', 'Import Excel Berhasil!');
+        } else {
+            return back()->with('error', SimpleXLSX::parseError());
+        }
+    }
+
     public function dashboard(Request $request)
     {
         // 1. Inisialisasi Query Dasar
@@ -172,17 +236,23 @@ class BarangController extends Controller
         }
 
         // 3. Filter Dropdown (Lokasi, Satuan, Status)
+        // Bagian Filter Lokasi
         if ($request->filled('locator')) {
-            $category = strtoupper($request->locator);
-            if ($category == 'REGULER') {
-                $query->where('locator', 'NOT LIKE', '%HOLD%')
-                    ->where('locator', 'NOT LIKE', '%NOK%');
-            } else {
-                $query->where('locator', 'LIKE', '%' . $category . '%');
-            }
+            $locators = (array) $request->locator; // Pastikan jadi array
+            $query->where(function($q) use ($locators) {
+                foreach ($locators as $loc) {
+                    if ($loc == 'REGULER') {
+                        $q->orWhere(fn($sq) => $sq->where('locator', 'NOT LIKE', '%HOLD%')->where('locator', 'NOT LIKE', '%NOK%'));
+                    } else {
+                        $q->orWhere('locator', 'LIKE', '%' . $loc . '%');
+                    }
+                }
+            });
         }
+
+        // Bagian Filter UOM
         if ($request->filled('uom')) {
-            $query->where('uom', $request->uom);
+            $query->whereIn('uom', (array) $request->uom);
         }
         if ($request->filled('status')) {
             if ($request->status == 'Low Stock') {

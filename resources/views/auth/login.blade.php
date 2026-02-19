@@ -4,7 +4,7 @@
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Login - Saprotan Utama</title>
-    
+    <link rel="icon" type="image/png" href="{{ asset('images/logo-su-w2.png') }}">
     <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/css/bootstrap.min.css" rel="stylesheet">
     
     <script>
@@ -27,7 +27,6 @@
 
         body { 
             transition: background-color 0.3s;
-            /* Mencegah teks input terlalu kecil di iOS */
             font-size: 16px; 
         }
 
@@ -45,7 +44,6 @@
             margin: auto;
         }
 
-        /* Fix agar input tidak otomatis zoom di mobile saat diklik */
         .form-control {
             font-size: 16px;
         }
@@ -54,7 +52,7 @@
             width: 50px;
             height: 50px;
             border-radius: 50%;
-            background: var(--bg-card); /* Mengikuti variabel tema yang sudah ada */
+            background: var(--bg-card);
             border: 1px solid rgba(0,0,0,0.1);
             display: flex;
             align-items: center;
@@ -63,7 +61,6 @@
             transition: all 0.3s cubic-bezier(0.175, 0.885, 0.32, 1.275);
         }
 
-        /* Efek Hover */
         .btn-theme-toggle:hover {
             transform: scale(1.1) rotate(15deg);
             box-shadow: 0 10px 20px rgba(0,0,0,0.2) !important;
@@ -75,7 +72,6 @@
             color: #fff;
         }
 
-        /* Memberikan sedikit nafas pada tampilan mobile */
         @media (max-width: 576px) {
             .auth-card {
                 margin: 15px;
@@ -90,7 +86,7 @@
         <div class="card auth-card shadow-lg p-4">
             <div class="text-center mb-4">
                 <img src="{{ asset('images/logo-su-w2.png') }}" style="max-height: 60px;" alt="Logo Saprotan Utama">
-                <h5 class="mt-3 fw-bold">Login Pegawai</h5>
+                <h5 class="mt-3 fw-bold">Login</h5>
                 <p class="text-muted small">Masuk untuk mengelola stok inventory</p>
             </div>
 
@@ -126,11 +122,11 @@
                 <div class="form-check mb-3 small">
                     <input class="form-check-input" type="checkbox" name="remember" id="remember">
                     <label class="form-check-label" for="remember">
-                        Ingat Saya
+                        Ingatkan Saya
                     </label>
                 </div>
 
-                <button type="submit" class="btn btn-primary w-100 py-2 fw-bold shadow-sm">Masuk ke Sistem</button>
+                <button type="submit" class="btn btn-primary w-100 py-2 fw-bold shadow-sm">Masuk</button>
             </form>
             
             <div class="text-center mt-4">

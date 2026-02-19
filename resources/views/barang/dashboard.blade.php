@@ -4,9 +4,14 @@
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Dashboard Monitoring - Saprotan Utama</title>
+
+    <link rel="icon" type="image/png" href="{{ asset('images/logo-su-w2.png') }}">
     
     <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/css/bootstrap.min.css" rel="stylesheet">
     <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/flatpickr/dist/flatpickr.min.css">
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap-icons@1.11.0/font/bootstrap-icons.css" rel="stylesheet">
+    <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/js/bootstrap.bundle.min.js"></script>
+    
     
     <style>
         :root {
@@ -40,6 +45,8 @@
             border-right: 1px solid rgba(0,0,0,0.05) !important; 
             height: 100vh; padding: 25px; position: fixed; width: var(--sidebar-width); 
             z-index: 1050; transition: all 0.4s cubic-bezier(0.4, 0, 0.2, 1);
+            overflow-y: auto; 
+            overflow-x: hidden;
         }
         
         .sidebar.collapsed { transform: translateX(-100%); }
@@ -78,7 +85,7 @@
             width: 50px;
             height: 50px;
             border-radius: 50%;
-            background: var(--bg-card); /* Mengikuti variabel tema yang sudah ada */
+            background: var(--bg-card);
             border: 1px solid rgba(0,0,0,0.1);
             display: flex;
             align-items: center;
@@ -87,7 +94,6 @@
             transition: all 0.3s cubic-bezier(0.175, 0.885, 0.32, 1.275);
         }
 
-        /* Efek Hover */
         .btn-theme-toggle:hover {
             transform: scale(1.1) rotate(15deg);
             box-shadow: 0 10px 20px rgba(0,0,0,0.2) !important;
@@ -99,7 +105,6 @@
             color: #fff;
         }
 
-        /* Table Improvements */
         .table-container { border-radius: 20px; overflow: hidden; background: var(--bg-card); }
         .table thead th { 
             background: var(--accent-soft); border: none; 
@@ -107,31 +112,26 @@
         }
         .table tbody td { padding: 15px 20px; border-bottom: 1px solid rgba(0,0,0,0.02); }
         
-        /* Custom Toggle Button */
         #sidebarToggle {
             background: var(--bg-card); color: var(--primary-color);
             border: 1px solid rgba(0,0,0,0.05); width: 50px; height: 50px;
             box-shadow: 0 4px 6px -1px rgba(0,0,0,0.1);
         }
 
-
-        /* Container untuk membatasi tinggi tabel */
         .table-scroll-container {
-            max-height: 300px; /* Sesuaikan angka ini agar pas dengan 5 baris + header */
+            max-height: 300px;
             overflow-y: auto;
             position: relative;
         }
 
-        /* Membuat Header tetap terlihat saat di-scroll (Sticky Header) */
         .table-scroll-container thead th {
             position: sticky;
             top: 0;
             z-index: 2;
-            background: var(--accent-soft) !important; /* Warna background header */
-            box-shadow: inset 0 -1px 0 rgba(0,0,0,0.1); /* Garis bawah halus */
+            background: var(--accent-soft) !important;
+            box-shadow: inset 0 -1px 0 rgba(0,0,0,0.1);
         }
 
-        /* Mempercantik tampilan scrollbar (Opsional) */
         .table-scroll-container::-webkit-scrollbar {
             width: 6px;
         }
@@ -142,13 +142,12 @@
         
 
         [data-bs-theme="dark"] .table-scroll-container thead th {
-            background: #2d2d2d !important; /* Warna abu gelap yang solid */
-            color: #e8eaed !important; /* Warna teks putih keabuan */
+            background: #2d2d2d !important;
+            color: #e8eaed !important;
             box-shadow: inset 0 -1px 0 rgba(255,255,255,0.1);
         }
 
 
-        /* Indikator Sortir */
         .sortable {
             cursor: pointer;
             position: relative;
@@ -160,7 +159,7 @@
         }
 
         .sortable::after {
-            content: ' \2195'; /* Simbol panah atas bawah netral */
+            content: ' \2195';
             opacity: 0.3;
             font-size: 0.8rem;
             margin-left: 5px;
@@ -178,12 +177,11 @@
             color: var(--primary-color);
         }
 
-        /* Marquee Alert Premium */
         .marquee-container {
             background: #fb5a5a; 
             border-left: 4px solid #ef4444; 
             border-radius: 12px;
-            overflow: hidden; /* Penting agar teks tidak keluar jalur */
+            overflow: hidden;
             white-space: nowrap;
             position: relative;
             height: 40px;
@@ -194,7 +192,38 @@
         .marquee-text {
             display: inline-block;
             padding-left: 100%;
-            animation: marquee 20s linear infinite;
+            animation: marquee 100s linear infinite;
+        }
+
+        .nav-link-custom {
+            display: block;
+            padding: 12px 20px;
+            color: #64748b;
+            text-decoration: none;
+            border-radius: 12px;
+            font-weight: 600;
+            font-size: 14px;
+            transition: all 0.2s;
+        }
+
+        .nav-link-custom:hover {
+            background: var(--accent-soft);
+            color: var(--primary-color);
+        }
+
+        .nav-link-custom.active {
+            background: var(--primary-color);
+            color: #ffffff !important;
+            box-shadow: 0 4px 12px rgba(13, 110, 253, 0.2);
+        }
+
+        [data-bs-theme="dark"] .nav-link-custom {
+            color: #a1a1aa;
+        }
+
+        [data-bs-theme="dark"] .nav-link-custom:hover {
+            background: rgba(255,255,255,0.05);
+            color: #fff;
         }
 
         @keyframes marquee {
@@ -206,7 +235,6 @@
             animation-play-state: paused;
         }
 
-        /* Tambahan untuk Sidebar agar smooth */
         .sidebar {
             transition: all 0.3s ease-in-out;
         }
@@ -214,37 +242,52 @@
             transition: all 0.3s ease-in-out;
         }
 
-        /* Styling khusus untuk layar HP (Mobile) */
+        .btn-link.text-inherit {
+            color: inherit !important;
+            text-decoration: none !important;
+        }
+
+        .transition-transform {
+            display: inline-block;
+            transition: transform 0.3s ease;
+        }
+
+        [aria-expanded="false"] .bi-chevron-down {
+            transform: rotate(180deg);
+        }
+
+        .nav-link-custom.p-0 {
+            overflow: hidden;
+        }
+
         @media (max-width: 768px) {
             .sidebar {
                 width: 100% !important;
                 height: auto !important;
-                max-height: 80vh; /* Agar tidak menutupi seluruh layar secara kaku */
+                max-height: 80vh;
                 top: 0;
                 left: 0;
-                transform: translateY(-100%); /* Sembunyi ke atas */
+                transform: translateY(-100%);
                 border-right: none !important;
                 border-bottom: 1px solid rgba(0,0,0,0.1);
-                padding-top: 70px; /* Jarak agar tidak tertutup tombol toggle */
+                padding-top: 70px;
                 overflow-y: auto;
             }
 
             .sidebar.collapsed {
-                transform: translateY(-100%); /* Tetap di atas saat tertutup */
+                transform: translateY(-100%);
             }
 
-            /* Saat aktif (muncul), tarik ke posisi 0 */
             .sidebar:not(.collapsed) {
                 transform: translateY(0);
             }
 
             .main-content {
                 margin-left: 0 !important;
-                padding-top: 80px; /* Beri ruang untuk tombol di atas */
+                padding-top: 80px;
             }
         }
 
-        /* Styling transisi agar smooth dari atas */
         .sidebar {
             transition: transform 0.4s cubic-bezier(0.4, 0, 0.2, 1) !important;
         }
@@ -273,56 +316,91 @@
     </div>
 
         <div class="sidebar shadow-sm">
-            <div class="d-flex align-items-center gap-2 mb-4 mt-0 pt-3 ms-4">
-                <img src="{{ asset('images/logo-su-w2.png') }}" style="max-height: 40px;">
-                <h6 class="fw-800 m-0 text-primary">DASHBOARD</h6>
-            </div>
-            
-            <div class="mb-4">
-                <a href="/" class="btn btn-white w-100 rounded-3 text-start small fw-bold py-2 border">
-                    🏠 Ke Portal Utama
-                </a>
-            </div>
+            <div class="text-center mb-3">
+            <img src="{{ asset('images/logo-su-w2.png') }}" alt="Logo" width="80">
+            <h5 class="mt-3 fw-bold text-uppercase" style="letter-spacing: 1px; color: var(--text-main);">Saprotan Utama</h5>
+        </div>
 
-            <form action="{{ route('barang.dashboard') }}" method="GET" class="px-1">
-                <label class="filter-label text-primary">🗓️ Periode Waktu</label>
-                <div class="p-3 rounded-4 mb-3 ">
-                    <input type="text" name="start_date" id="start_date" class="form-control form-control-sm mb-2 border-1 shadow-none" placeholder="Tanggal Mulai" value="{{ request('start_date') }}">
-                    <input type="text" name="end_date" id="end_date" class="form-control form-control-sm border-1 shadow-none" placeholder="Tanggal Selesai" value="{{ request('end_date') }}">
+        <hr class="mx-3 opacity-10">
+
+            <label class="filter-label text-primary px-3"><i class="bi bi-house"></i> Main Menu</label>
+            <div class="nav flex-column gap-1 mb-1 px-2">
+                <div class="d-flex align-items-center nav-link-custom justify-content-between p-0 {{ request()->routeIs('barang.dashboard') ? 'active' : '' }}">
+                    <a href="{{ route('barang.dashboard') }}" class="text-decoration-none d-flex align-items-center flex-grow-0 py-2 px-4" style="color: inherit;">
+                        <i class="bi bi-speedometer2 me-2"></i> Dashboard
+                    </a>
+                    
+                    @if(request()->routeIs('barang.dashboard'))
+                        <button class="btn btn-link text-inherit border-0 py-2 px-4 m-1 shadow-none" 
+                        type="button"
+                        data-bs-toggle="collapse" 
+                        data-bs-target="#filterDashboard" 
+                        aria-expanded="true">
+                            <i class="bi bi-chevron-down transition-transform" id="chevronIcon"></i>
+                        </button>
+                    @endif
                 </div>
 
-                <label class="filter-label">📍 Filter Lokasi</label>
-                <select name="locator" class="form-select form-select-sm mb-4 rounded-3" onchange="this.form.submit()">
-                    <option value="">Semua Kategori</option>
-                    <option value="REGULER" {{ request('locator') == 'REGULER' ? 'selected' : '' }}>REGULER</option>
-                    <option value="HOLD" {{ request('locator') == 'HOLD' ? 'selected' : '' }}>HOLD</option>
-                    <option value="NOK" {{ request('locator') == 'NOK' ? 'selected' : '' }}>NOK</option>
-                </select>
+                @if(request()->routeIs('barang.dashboard'))
+                    <div class="collapse show mt-2 ms-3 ps-3 border-start" id="filterDashboard">
+                        <div class="px-1 py-2">
+                            <form action="{{ route('barang.dashboard') }}" method="GET">
+                                <label class="filter-label text-primary mt-2"><i class="bi bi-calendar-range"></i> Periode Waktu</label>
+                                <input type="text" name="start_date" id="start_date" class="form-control form-control-sm mb-2" placeholder="Mulai" value="{{ request('start_date') }}">
+                                <input type="text" name="end_date" id="end_date" class="form-control form-control-sm" placeholder="Selesai" value="{{ request('end_date') }}">
 
-                <label class="filter-label">📦 Satuan (UOM)</label>
-                <select name="uom" class="form-select form-select-sm mb-4 rounded-3" onchange="this.form.submit()">
-                    <option value="">Semua Satuan</option>
-                    @foreach($allUoms as $u)
-                        <option value="{{ $u }}" {{ request('uom') == $u ? 'selected' : '' }}>{{ $u }}</option>
-                    @endforeach
-                </select>
+                                <label class="filter-label text-primary mt-2"><i class="bi bi-funnel"></i> Filter</label>
+                                <select name="locator" class="form-select form-select-sm mb-2 rounded-3" onchange="this.form.submit()">
+                                    <option value="">Semua Lokasi</option>
+                                    <option value="REGULER" {{ request('locator') == 'REGULER' ? 'selected' : '' }}>REGULER</option>
+                                    <option value="HOLD" {{ request('locator') == 'HOLD' ? 'selected' : '' }}>HOLD</option>
+                                    <option value="NOK" {{ request('locator') == 'NOK' ? 'selected' : '' }}>NOK</option>
+                                </select>
 
-                <label class="filter-label">📊 STOK STATUS</label>
-                <select name="status" class="form-select form-select-sm mb-4 rounded-3" onchange="this.form.submit()">
-                    <option value="">Semua Status</option>
-                    <option value="Safe Stock" {{ request('status') == 'Safe Stock' ? 'selected' : '' }}>Safe Stock (>500)</option>
-                    <option value="Low Stock" {{ request('status') == 'Low Stock' ? 'selected' : '' }}>Low Stock </option>
-                </select>
+                                <select name="uom" class="form-select form-select-sm mb-2 rounded-3" onchange="this.form.submit()">
+                                    <option value="">Semua Satuan</option>
+                                    @foreach($allUoms as $u)
+                                        <option value="{{ $u }}" {{ request('uom') == $u ? 'selected' : '' }}>{{ $u }}</option>
+                                    @endforeach
+                                </select>
 
-                
-                <button type="submit" class="btn btn-primary w-100 rounded-3 fw-bold shadow-sm">Update Data</button>
-                <a href="{{ route('barang.dashboard') }}" class="btn btn-light btn-sm w-100 mt-2 border">Reset</a>
-            </form>
-        </div>
+                                <select name="status" class="form-select form-select-sm mb-4 rounded-3" onchange="this.form.submit()">
+                                    <option value="">Semua Status</option>
+                                    <option value="Safe Stock" {{ request('status') == 'Safe Stock' ? 'selected' : '' }}>Safe Stock</option>
+                                    <option value="Low Stock" {{ request('status') == 'Low Stock' ? 'selected' : '' }}>Low Stock </option>
+                                </select>
+                                
+                                <button type="submit" class="btn btn-primary w-100 rounded-3 fw-bold btn-sm">Update Data</button>
+                                <a href="{{ route('barang.dashboard') }}" class="btn btn-light btn-sm w-100 mt-2 border">Reset</a>
+                            </form>
+                        </div>
+                    </div>
+                @endif
+            </div>
+            <div class="nav flex-column gap-1 mb-4 px-2">
+                <a href="{{ route('barang.index') }}" class="nav-link-custom {{ request()->routeIs('barang.index') ? 'active' : '' }}">
+                    <i class="bi bi-box-seam me-2"></i> Stock Inventory
+                </a>
+            </div>
+                <hr class="mx-3 opacity-10">
+
+                <label class="filter-label text-danger px-3"><i class="bi bi-door-open"></i> Session</label>
+                <div class="nav flex-column gap-1 mb-4 px-2">
+                    <a href="#" class="nav-link-custom text-danger" 
+                    onclick="event.preventDefault(); document.getElementById('logout-form').submit();">
+                        <i class="bi bi-box-arrow-left me-2"></i> Sign Out
+                    </a>
+
+                    <form id="logout-form" action="{{ route('logout') }}" method="POST" class="d-none">
+                        @csrf
+                    </form>
+                </div>
+            </div>
+            
 
     <div class="main-content">
         <div class="d-flex justify-content-between align-items-start mb-4">
-            <h4 class="fw-bold m-0">Monitoring Stok Pupuk - Gudang Kembangarum</h4>
+            <h2 class="fw-bold m-0">Monitoring Stok Pupuk - Gudang Kembangarum</h2>
             
             <div class="d-flex flex-column align-items-end">
                 
@@ -493,11 +571,9 @@
                             const currentLocator = url.searchParams.get('locator');
 
                             // LOGIKA TOGGLE:
-                            // Jika label yang diklik sama dengan filter yang sedang aktif, hapus filternya (Reset)
                             if (currentLocator === selectedLabel) {
                                 url.searchParams.delete('locator');
                             } else {
-                                // Jika beda atau belum ada filter, pasang filter baru
                                 url.searchParams.set('locator', selectedLabel);
                             }
 
@@ -553,7 +629,6 @@
                     scales: { 
                         x: { 
                             beginAtZero: true,
-                            // Membatasi agar bar tidak "off-side"
                             grace: '5%', 
                             grid: { 
                                 display: true,
@@ -598,7 +673,6 @@
                     const column = header.cellIndex;
                     const sortOrder = header.classList.contains('sort-asc') ? 'desc' : 'asc';
 
-                    // Reset semua header
                     headers.forEach(h => h.classList.remove('sort-asc', 'sort-desc'));
                     header.classList.add(sortOrder === 'asc' ? 'sort-asc' : 'sort-desc');
 
@@ -606,7 +680,6 @@
                         let aColText = a.querySelector(`td:nth-child(${column + 1})`).innerText.trim();
                         let bColText = b.querySelector(`td:nth-child(${column + 1})`).innerText.trim();
 
-                        // Jika angka, hapus koma pemisah ribuan agar bisa dihitung
                         if (type === 'number') {
                             aColText = parseFloat(aColText.replace(/,/g, '')) || 0;
                             bColText = parseFloat(bColText.replace(/,/g, '')) || 0;
@@ -617,7 +690,6 @@
                         return 0;
                     });
 
-                    // Masukkan kembali row yang sudah diurutkan
                     while (tableBody.firstChild) {
                         tableBody.removeChild(tableBody.firstChild);
                     }
@@ -663,11 +735,10 @@
                         }
                     });
                 }
-                chart.update('none'); // 'none' agar update lebih cepat tanpa animasi berlebih
+                chart.update('none');
             });
         }
 
-        // Fungsi untuk ganti tema saat tombol diklik
         function toggleTheme() {
             const isDark = htmlTag.getAttribute('data-bs-theme') === 'dark';
             const newTheme = isDark ? 'light' : 'dark';
@@ -687,19 +758,15 @@
 
         themeSwitcher.addEventListener('click', toggleTheme);
 
-        // Jalankan saat load
         document.addEventListener("DOMContentLoaded", function() {
             const savedTheme = localStorage.getItem('theme') || 'light';
             
-            // Sinkronisasi icon saja (karena atribut HTML sudah dipasang di HEAD)
             themeIcon.innerText = (savedTheme === 'dark') ? '☀️' : '🌙';
             
-            // Update chart setelah render pertama
             setTimeout(() => {
                 updateChartTheme(savedTheme === 'dark');
             }, 200);
 
-            // ... (Logika sidebar Anda yang sudah benar sebelumnya) ...
             const sidebar = document.querySelector('.sidebar');
             if (window.innerWidth <= 768) {
                 sidebar.classList.add('collapsed');

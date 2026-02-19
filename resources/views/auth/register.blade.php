@@ -4,6 +4,7 @@
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Register - Saprotan Utama</title>
+    <link rel="icon" type="image/png" href="{{ asset('images/logo-su-w2.png') }}">
     <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/css/bootstrap.min.css" rel="stylesheet">
     
     <script>
@@ -108,7 +109,7 @@
                 </div>
 
                 <div class="mb-3">
-                    <label class="form-label small fw-bold">Email Kerja</label>
+                    <label class="form-label small fw-bold">Email</label>
                     <input type="email" name="email" class="form-control" value="{{ old('email') }}" required placeholder="nama@saprotan.com">
                 </div>
 
